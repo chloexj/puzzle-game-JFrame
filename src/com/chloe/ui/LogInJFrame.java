@@ -1,40 +1,49 @@
 package com.chloe.ui;
+
+import com.chloe.other.FunctionClass;
 import com.chloe.other.User;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class LogInJFrame extends JFrame implements MouseListener {
-    static ArrayList<User> userAccount=new ArrayList<User>();
-    static {
-        userAccount.add(new User("admin","password123"));
-        userAccount.add(new User("chloe","123"));
-    }
+    ArrayList<User> userAccount = new ArrayList<User>();
+    //    static {
+//        userAccount.add(new User("admin","password123"));
+//        userAccount.add(new User("chloe","123"));
+//    }
+    File account = new File("E:\\000-整理-个人文件夹\\学习相关\\Java\\PuzzleGame\\Record\\Account.txt");
     String path = "E:\\000-整理-个人文件夹\\学习相关\\Java\\PuzzleGame\\Photos\\";
     JButton changeVery = new JButton();
     JButton logInBut = new JButton();
     JButton signUpBut = new JButton();
     JLabel showVeryCode = new JLabel();
-    String rightVery=getVery();
+    String rightVery = getVery();
 
     JTextField inpUserName = new JTextField();
     JPasswordField inpPass = new JPasswordField();
     JTextField inpVery = new JTextField();
 
 
-    public LogInJFrame() {
-
-
+    public LogInJFrame() throws IOException {
+        new FunctionClass().codeFile(account);
+        new FunctionClass().readUserInfo(account, userAccount);
+        new FunctionClass().codeFile(account);
+        System.out.println(userAccount);
         setAllScreen();
         setJFrame();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(path + "myIcon.jpg"));
         this.setVisible(true);
 
     }
 
-    public void setJFrame(){
+
+    public void setJFrame() {
         this.setSize(500, 440);
         this.setTitle("Puzzle Game-Log in");
         this.setLocationRelativeTo(null);
@@ -80,7 +89,7 @@ public class LogInJFrame extends JFrame implements MouseListener {
         //get log in and sign up button
 
         logInBut.setBounds(90, 300, 140, 60);
-        logInBut.setIcon(new ImageIcon(path +"LogIn_o.png"));
+        logInBut.setIcon(new ImageIcon(path + "LogIn_o.png"));
         logInBut.setBorderPainted(false);//move the boder
         logInBut.setContentAreaFilled(false);//move the background of th button.
         this.getContentPane().add(logInBut);
@@ -130,26 +139,28 @@ public class LogInJFrame extends JFrame implements MouseListener {
         String very = new String(arr);
         return very;
     }
-public boolean userExist(User user1,ArrayList<User>allUser){
-    for (int i = 0; i < allUser.size(); i++) {
-        if((user1.getUserName().equalsIgnoreCase(allUser.get(i).getUserName()))&&(user1.getPassword().equals(allUser.get(i).getPassword()))){
-            return true;
-        }
-    }
-    return false;
-}
-public void showjDialog(String warning){
-JDialog showWarning=new JDialog();
-showWarning.setSize(300,90);
-showWarning.setLocationRelativeTo(null);
-showWarning.setAlwaysOnTop(true);
-showWarning.setModal(true);
 
-JLabel warningInfo=new JLabel(warning);
-warningInfo.setBounds(20,0,300,90);
-showWarning.getContentPane().add(warningInfo);
-showWarning.setVisible(true);
-}
+    //public boolean userExist(User user1,ArrayList<User>allUser){
+//    for (int i = 0; i < allUser.size(); i++) {
+//        if((user1.getUsername().equalsIgnoreCase(allUser.get(i).getUsername()))&&(user1.getPassword().equals(allUser.get(i).getPassword()))){
+//            return true;
+//        }
+//    }
+//    return false;
+//}
+    private void showjDialog(String warning) {
+        JDialog showWarning = new JDialog();
+        showWarning.setSize(400, 90);
+        showWarning.setLocationRelativeTo(null);
+        showWarning.setAlwaysOnTop(true);
+        showWarning.setModal(true);
+
+        JLabel warningInfo = new JLabel(warning);
+        warningInfo.setBounds(20, 0, 300, 90);
+        showWarning.getContentPane().add(warningInfo);
+        showWarning.setVisible(true);
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -158,72 +169,128 @@ showWarning.setVisible(true);
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getSource() == logInBut) {
-            logInBut.setIcon(new ImageIcon(path+"LogIn_c.png"));
-           }else if(e.getSource() == signUpBut){
-            signUpBut.setIcon(new ImageIcon(path+"SignUp_c.png"));
+            logInBut.setIcon(new ImageIcon(path + "LogIn_c.png"));
+        } else if (e.getSource() == signUpBut) {
+            signUpBut.setIcon(new ImageIcon(path + "SignUp_c.png"));
         }
     }
 
-        @Override
-        public void mouseReleased (MouseEvent e){
-          if (e.getSource() == logInBut) {
-                logInBut.setIcon(new ImageIcon(path+"LogIn_o.png"));
-                System.out.println("LOG IN");
-                // real log in code
-              String getUserName = inpUserName.getText();
-              String getPass = inpPass.getText();
-              String getVeryCode = inpVery.getText();
-              User input = new User(getUserName, getPass);
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getSource() == logInBut) {
+            logInBut.setIcon(new ImageIcon(path + "LogIn_o.png"));
+            System.out.println("LOG IN");
+            // real log in code
+            String getUserName = inpUserName.getText();
+            String getPass = inpPass.getText();
+            String getVeryCode = inpVery.getText();
+            User input = new User(getUserName, getPass);
 
 //compare verification code
-              if (getVeryCode.length() == 0) {
-                  showjDialog("Verification code is empty");
-              }else if((getUserName.length()==0)||(getPass.length()==0)){
-                  showjDialog("Username of password cannot be empty");
-              }
-              else if (getVeryCode.equalsIgnoreCase(rightVery)){
-                  if(userExist(input,userAccount)){
-                      //log in successfully
-                      this.setVisible(false);
-                      new GameJFrame();
-                  }else{
-                      showjDialog("Username and password do not match");
-                  }
+            if (getVeryCode.length() == 0) {
+                showjDialog("Verification code is empty");
+            } else if ((getUserName.length() == 0) || (getPass.length() == 0)) {
+                showjDialog("Username of password cannot be empty");
+            } else if (getVeryCode.equalsIgnoreCase(rightVery)) {
+                int index = new FunctionClass().existOrNot(userAccount, input);
+                int tryTime = userAccount.get(index).getTryTime();
+                //more than 5 times???
+                if (tryTime == -1) {
+                    showjDialog("Username does not exist.");
 
-              }else {
-                  showjDialog("Verification code is wrong");
-              }
-            } else if(e.getSource() == signUpBut){
-                signUpBut.setIcon(new ImageIcon(path+"SignUp_o.png"));
-                showjDialog("username:admin  password:password123");
-                System.out.println("sign up");
-            } else if(e.getSource() == showVeryCode){
-              rightVery=getVery();
-                showVeryCode.setText(rightVery);
-                System.out.println("change");
+                } else if (tryTime >= 5) {
+                    //more than 5 times
+                    showjDialog("Sorry, You input incorrectly more than 5 times, your account is locked");
+                } else {
+                    tryTime++;
+                    if (input.getPassword().equals(userAccount.get(index).getPassword())) {
+                        //correct - log in -write in
+                        //log in successfully
+                        tryTime = 0;
+                        try {
+                            new FunctionClass().codeFile(account);
+                            writeInTryTime(userAccount, input, index, tryTime, account);
+                            new FunctionClass().codeFile(account);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                        this.setVisible(false);
+                        try {
+                            new GameJFrame(input);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    } else {
+                        //incorrect - write in
+
+                        try {
+                            new FunctionClass().codeFile(account);
+                            writeInTryTime(userAccount, input, index, tryTime, account);
+                            new FunctionClass().codeFile(account);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        if(tryTime>=5){
+                            showjDialog("Sorry, You input incorrectly for 5 times, your account is locked");
+                        }else {
+                            showjDialog("Sorry, You input incorrectly, " + (5 - tryTime) + " left");
+                        }
+                    }
+                }
+
+            } else {
+                showjDialog("Verification code is wrong");
+            }
+        } else if (e.getSource() == signUpBut) {
+            signUpBut.setIcon(new ImageIcon(path + "SignUp_o.png"));
+//            showjDialog("username:admin  password:password123");
+            this.setVisible(false);
+            try {
+                new SignUpJFrame();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
 
+            System.out.println("sign up");
+        } else if (e.getSource() == showVeryCode) {
+            rightVery = getVery();
+            showVeryCode.setText(rightVery);
+            System.out.println("change");
         }
-
-        @Override
-        public void mouseEntered (MouseEvent e){
-            if (e.getSource() == logInBut) {
-                logInBut.setIcon(new ImageIcon(path+"LogIn_f.png"));
-
-            }else if(e.getSource() == signUpBut){
-                signUpBut.setIcon(new ImageIcon(path+"SignUp_f.png"));
-            }
-
-        }
-
-        @Override
-        public void mouseExited (MouseEvent e){
-            if (e.getSource() == logInBut) {
-                logInBut.setIcon(new ImageIcon(path+"LogIn_o.png"));
-            }else if(e.getSource() == signUpBut){
-                signUpBut.setIcon(new ImageIcon(path+"SignUp_o.png"));
-            }
-        }
-
 
     }
+
+    private void writeInTryTime(ArrayList<User> userAccount, User input, int index, int tryTime, File account) throws IOException {
+        userAccount.get(index).setTryTime(tryTime);
+        BufferedWriter bw = new BufferedWriter(new FileWriter(account));
+        for (User user : userAccount) {
+            bw.write(user + "&" + user.getTryTime());
+            bw.newLine();
+        }
+        bw.close();
+    }
+
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (e.getSource() == logInBut) {
+            logInBut.setIcon(new ImageIcon(path + "LogIn_f.png"));
+
+        } else if (e.getSource() == signUpBut) {
+            signUpBut.setIcon(new ImageIcon(path + "SignUp_f.png"));
+        }
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (e.getSource() == logInBut) {
+            logInBut.setIcon(new ImageIcon(path + "LogIn_o.png"));
+        } else if (e.getSource() == signUpBut) {
+            signUpBut.setIcon(new ImageIcon(path + "SignUp_o.png"));
+        }
+    }
+
+
+}
