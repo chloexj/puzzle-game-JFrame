@@ -33,6 +33,6 @@ A **single-player puzzle game** developed using **Java (JFrame)**, featuring **s
 
   ![game2](https://s3.us-east-1.amazonaws.com/com.chloe.testaws/puzzlegame/game2.png)
 
-  ![cheat to win](https://s3.us-east-1.amazonaws.com/com.chloe.testaws/puzzlegame/cheat to win.png)
+  ![cheat to win](https://s3.us-east-1.amazonaws.com/com.chloe.testaws/puzzlegame/cheat+to+win.png)
 
   ![saveload](https://s3.us-east-1.amazonaws.com/com.chloe.testaws/puzzlegame/saveload.png)
